@@ -1,10 +1,12 @@
-INSERT INTO department (name, department_id)
-VALUES  ('Accounting', 1),
-        ('Sales', 2),
-        ('Marketing', 3),
-        ('HR', 4),
-        ('Claims', 5),
+-- Create the seeds for department
+INSERT INTO department (name)
+VALUES  ('Accounting'),
+        ('Sales'),
+        ('Marketing'),
+        ('HR'),
+        ('Claims');
 
+-- Create the seeds for role
 INSERT INTO roles(title, id, department_id, salary)
 VALUES  ('CPA', 60000, 1, 120000),
         ('Regional Sales Associate', 50000, 2, 110000),
@@ -12,8 +14,9 @@ VALUES  ('CPA', 60000, 1, 120000),
         ('Coordinator', 30000, 4, 90000),
         ('Reviewer', 20000, 5, 80000);
 
+-- Create the seed for employees
 INSERT INTO employees(first_name, last_name, role_id, manager_id)
-        ('Bruce', 'Wayne', 1, NULL),
+VALUES  ('Bruce', 'Wayne', 1, NULL),
         ('Robin', 'Adams', 1, 1),
         ('Clark', 'Kent', 2, NULL),
         ('James', 'Clark', 2, 2),
