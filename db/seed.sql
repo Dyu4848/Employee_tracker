@@ -1,5 +1,6 @@
+-- Active: 1675203485014@@127.0.0.1@3306@employee_db
 -- Create the seeds for department
-INSERT INTO department (name)
+INSERT INTO departments (department_name)
 VALUES  ('Accounting'),
         ('Sales'),
         ('Marketing'),

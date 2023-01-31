@@ -18,9 +18,11 @@
   },
   "homepage": "https://github.com/Dyu4848/Employee_tracker#readme",
   "dependencies": {
+    "console.table": "^0.10.0",
     "dotenv": "^16.0.3",
     "figlet": "^1.5.2",
-    "inquirer": "^6.3.1",
+    "fs": "^0.0.1-security",
+    "inquirer": "^8.2.4",
     "mysql2": "^3.0.1"
   }
 }
