@@ -1,7 +1,7 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const db = require('./config/connection');
-const { existsSync } = require('fs');
+const { Console } = require('console');
 
 // Connection is in config folder, not needed twice
 
@@ -43,9 +43,6 @@ function init() {
                 'Add a role',
                 'Add an employee',
                 'Update an employee',
-                'Delete a department',
-                'Delete a role',
-                'Delete an employee',
                 'Exit'
             ],
         }
@@ -65,16 +62,10 @@ function init() {
                 addRole();
             } else if (response.menu === 'Add an employee') {
                 addEmployee();
-            } else if (response.menu === 'Delete a department') {
-                deleteDepartment();
-            } else if (response.menu === 'Delete a role') {
-                deleteRole();
-            } else if (response.menu === 'Delete an employee') {
-                deleteEmployee();
-            } else if (response.menu === 'Exit') {
-                db.end();
             } else if (response.menu === 'Update an employee') {
                 updateEmployee();
+            } else if (response.menu === 'Exit') {
+                db.end();
             }
         });
 };
@@ -158,7 +149,56 @@ function addEmployee() {
 // Function to update employees
 
 function updateEmployee() {
+    db.promise().query('select * from employees;')
+        .then(([rows]) => {
 
+            let employees = rows;
+            console.log('\n');
+            console.table(employees);
+
+            db.promise().query('select * from roles;')
+                .then(([roleData]) => {
+                    let roles = roleData;
+                    console.table(roles);
+                    inquirer.prompt([
+                        {
+                            name: 'employee',
+                            type: 'list',
+                            message: 'Please select an employee to update',
+                            choices: employees.map(employee => {
+                                return `${employee.first_name} ${employee.last_name}`
+                            })
+                        },
+                        {
+                            name: 'roles',
+                            type: 'list',
+                            message: 'Please select a role',
+                            choices: roles.map(role => {
+                                return `${role.title}`;
+                            })
+                        }
+                    ])
+                        .then(answer => {
+                            console.table(answer)
+                            let employeeId = employees.filter(employee => {
+                                return employee.first_name === answer.employee.split(' ')[0];
+                            })
+                            console.log(employeeId);
+                            let roleId = roles.filter(role => {
+                                return role.title === answer.roles;
+                            })
+                            console.log(roleId);
+                            db.promise().query(`UPDATE employees SET role_id = ${roleId[0].id} WHERE id = ${employeeId[0].id};`)
+                            .then(() => {
+                              console.log(`Employee ${answer.employee} has been updated to the role of ${answer.roles}.`);
+                              init();
+                            })
+                            .catch(error => {
+                              console.error(error);
+                            });
+                        })
+                })
+        })
 }
 
 //  Function to add roles
@@ -182,7 +222,7 @@ function addRole() {
     ])
 
         .then(role => {
-            const sql = `INSERT INTO roles 
+            const sql = `INSERT INTO roles
                      SET ?`;
             const params = {
                 title: role.title,
@@ -199,17 +239,17 @@ function addRole() {
 
 // Function to add departments
 function addDepartment() {
-        inquirer.prompt([
-            {
-                name: 'department_name',
-                type: 'input',
-                message: 'What is the department?'
-            }
-        ])
+    inquirer.prompt([
+        {
+            name: 'department_name',
+            type: 'input',
+            message: 'What is the department?'
+        }
+    ])
 
 
         .then(department => {
-            const sql = `INSERT INTO departments 
+            const sql = `INSERT INTO departments
         SET ?`;
 
             const params = {
